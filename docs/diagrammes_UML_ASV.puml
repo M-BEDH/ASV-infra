@@ -1,6 +1,5 @@
 ' ============================================================
 ' Diagramme de cas d'utilisation — ASV
-' Melissa BEDHOMME — RNCP37873 CDA — Mai 2026
 ' ============================================================
 
 @startuml diagramme_cas_utilisation
@@ -128,7 +127,6 @@ CLIENT --> UC15
 
 ' ============================================================
 ' Diagramme de classes — ASV
-' Melissa BEDHOMME — RNCP37873 CDA — Mai 2026
 ' ============================================================
 
 @startuml diagramme_classes                                                                                                                                                                        
@@ -216,7 +214,6 @@ CLIENT --> UC15
   @enduml
 ' ============================================================
 ' Diagramme de séquence — Authentification JWT
-' Melissa BEDHOMME — RNCP37873 CDA — Mai 2026
 ' ============================================================
 
 @startuml diagramme_sequence_auth
@@ -285,7 +282,6 @@ Frontend --> Utilisateur : Affiche les données
 
 ' ============================================================
 ' Diagramme de séquence — Création d'une consultation médicale
-' Melissa BEDHOMME — RNCP37873 CDA — Mai 2026
 ' ============================================================
 
 @startuml diagramme_sequence_consultation
