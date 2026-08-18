@@ -5,9 +5,6 @@
 
 monitoring/mysqld-exporter/.my.cnf
 
-# Dossier personnel
-Memo
-
 # sous-repos indépendants
 backend/
 mobile-web/
