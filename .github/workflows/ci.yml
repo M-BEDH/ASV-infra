@@ -21,13 +21,12 @@ jobs:
 
       # Vérifie que docker-compose.yml est syntaxiquement valide et que toutes
       # les variables d'environnement requises sont bien définies.
-      # Les credentials viennent des secrets du repo GitHub (Settings → Secrets).
       - name: Valider la config docker-compose
         run: docker compose config
         env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD }}
-          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
-          MYSQL_USER: ${{ secrets.MYSQL_USER }}
-          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-          GRAFANA_ADMIN_USER: ${{ secrets.GRAFANA_ADMIN_USER }}
-          GRAFANA_ADMIN_PASSWORD: ${{ secrets.GRAFANA_ADMIN_PASSWORD }}
+          MYSQL_ROOT_PASSWORD: MYSQL_ROOT_PASSWORD 
+          MYSQL_DATABASE: MYSQL_DATABASE 
+          MYSQL_USER: MYSQL_USER 
+          MYSQL_PASSWORD: MYSQL_PASSWORD 
+          GRAFANA_ADMIN_USER: GRAFANA_ADMIN_USER 
+          GRAFANA_ADMIN_PASSWORD: GRAFANA_ADMIN_PASSWORD 
