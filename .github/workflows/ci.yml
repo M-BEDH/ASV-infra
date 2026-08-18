@@ -11,7 +11,6 @@ jobs:
   # ─── Validation de la configuration Docker Compose ───────────────────────────
   # Le repo principal contient docker-compose.yml, nginx/ et monitoring/.
   # Les tests backend et frontend sont dans leurs propres repos (backend/, mobile-web/).
-  # Ce job vérifie que la config docker-compose est valide avec les vraies variables.
   docker-compose-check:
     name: Validation docker-compose (CD)
     runs-on: ubuntu-latest
