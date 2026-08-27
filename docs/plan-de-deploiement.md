@@ -1,6 +1,6 @@
 # Plan de déploiement — ASV
 
-*Application de Suivi Vétérinaire · Mélissa Bedhomme · CDA RNCP37873 · Mai 2026*
+*Application de Suivi Vétérinaire · Mélissa Bedhomme · CDA RNCP37873 · Septembre 2026*
 
 ---
 
@@ -52,12 +52,14 @@ Le backend et le frontend sont des sous-répertoires (`backend/` et `mobile-web/
 
 ## 3. Clonage des dépôts
 
+Les trois dépôts sont **indépendants** (pas de submodule Git — `backend/` et `mobile-web/` sont même listés dans le `.gitignore` du repo principal). Le clone du repo principal seul ne suffit donc pas : les trois clones ci-dessous sont obligatoires.
+
 ```bash
-# Cloner le repo principal (contient backend/ et mobile-web/ comme sous-modules)
+# Cloner le repo principal (infra Docker)
 git clone https://github.com/M-BEDH/ASV.git
 cd ASV
 
-# Initialiser les sous-repos si nécessaire
+# Cloner le backend et le frontend dans leurs sous-dossiers respectifs (obligatoire)
 git clone https://github.com/M-BEDH/ASV-backend.git backend
 git clone https://github.com/M-BEDH/ASV-frontend.git mobile-web
 ```
@@ -106,14 +108,16 @@ Renseigner dans `backend/.env.local` :
 
 ### 4.3 Frontend Expo
 
-Créer `mobile-web/.env.local` :
+Créer `mobile-web/.env` (⚠️ pas `.env.local`) :
 
 ```bash
-# mobile-web/.env.local
+# mobile-web/.env
 EXPO_PUBLIC_API_URL=http://localhost:8080
 ```
 
 En production, remplacer `localhost:8080` par l'URL publique de l'API.
+
+> **Important :** utiliser `.env` et non `.env.local`. C'est le fichier `.env` qui doit être présent au moment du build EAS pour que la variable soit embarquée dans l'APK.
 
 ---
 
@@ -344,11 +348,11 @@ Ces fichiers sont ignorés par `.gitignore` et doivent être créés sur chaque 
 |---|---|---|
 | `.env` | §4.1 | Variables infra Docker |
 | `backend/.env.local` | §4.2 | Variables Symfony |
-| `mobile-web/.env.local` | §4.3 | URL API frontend |
+| `mobile-web/.env` | §4.3 | URL API frontend |
 | `monitoring/mysqld-exporter/.my.cnf` | §5.2 | Credentials MySQL exporter |
 | `backend/config/jwt/private.pem` | §5.1 | Clé privée JWT (générée) |
 | `backend/config/jwt/public.pem` | §5.1 | Clé publique JWT (générée) |
 
 ---
 
-*Mélissa Bedhomme — Dossier professionnel CDA RNCP37873 — Mai 2026*
+*Mélissa Bedhomme — Dossier professionnel CDA RNCP37873 — Septembre 2026*
