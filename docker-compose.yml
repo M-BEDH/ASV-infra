@@ -110,6 +110,8 @@ services:
     environment:
       MP_SMTP_AUTH_ACCEPT_ANY: 1 # Accepte tous les identifiants SMTP (pas de rejet d'authentification)
       MP_SMTP_AUTH_ALLOW_INSECURE: 1 # Permet l'authentification même sans TLS (utile pour le développement local)
+    networks:
+      - app-network
   ###< symfony/mailer ###
 
   cadvisor:
