@@ -1,4 +1,4 @@
-# ASV — Application de Suivi Vétérinaire - Projet-CDA
+# ASV — Application de Suivi Vétérinaire
 
 Application de gestion multi-établissements pour cliniques vétérinaires, refuges et associations.
 Développée dans le cadre du titre professionnel **Concepteur Développeur d'Applications (RNCP37873)**.
