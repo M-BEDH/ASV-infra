@@ -8,13 +8,15 @@
 
 Le projet ASV est composé de **trois dépôts Git** déployés ensemble :
 
-| Repo | Rôle | Technologie |
+| Repo GitHub | Rôle | Technologie |
 |---|---|---|
-| **ASV** (repo principal) | Infra Docker, Nginx, Monitoring | Docker Compose, Nginx 1.27, Prometheus, Grafana |
+| **ASV-infra** (repo principal) | Infra Docker, Nginx, Monitoring | Docker Compose, Nginx 1.27, Prometheus, Grafana |
 | **ASV-backend** | API REST | Symfony 7.4 / PHP 8.2-FPM |
 | **ASV-frontend** | Application web/mobile | Expo 54 / React Native Web |
 
 Le backend et le frontend sont des sous-répertoires (`backend/` et `mobile-web/`) du repo principal, chacun avec son propre `.git`.
+
+⚠️ **Ce ne sont pas des submodules Git déclarés** — `backend/` et `mobile-web/` sont même listés dans le `.gitignore` du repo principal (`ASV-infra` ne connaît pas leur contenu). Le lien entre les trois dépôts est **purement une convention de chemin** : `docker-compose.yml` référence `./backend` en chemin relatif (volume nginx ligne 9, contexte de build PHP ligne 18). Cloner les trois dépôts côte à côte (frères) au lieu de les imbriquer comme décrit en §3 casse donc `docker compose up` (nginx ne trouve rien à monter, le build PHP échoue).
 
 ### Services Docker
 
@@ -52,16 +54,28 @@ Le backend et le frontend sont des sous-répertoires (`backend/` et `mobile-web/
 
 ## 3. Clonage des dépôts
 
-Les trois dépôts sont **indépendants** (pas de submodule Git — `backend/` et `mobile-web/` sont même listés dans le `.gitignore` du repo principal). Le clone du repo principal seul ne suffit donc pas : les trois clones ci-dessous sont obligatoires.
+Les trois dépôts sont **indépendants** (pas de submodule Git — cf. avertissement §1). Le clone du repo principal seul ne suffit donc pas, et cloner les trois dépôts côte à côte sans les imbriquer ne fonctionne pas non plus : `backend/` et `mobile-web/` doivent être clonés **à l'intérieur** du repo principal, exactement aux emplacements attendus par `docker-compose.yml`.
 
 ```bash
-# Cloner le repo principal (infra Docker)
-git clone https://github.com/M-BEDH/ASV.git
-cd ASV
+# 1. Cloner le repo principal (infra Docker) en premier
+git clone https://github.com/M-BEDH/ASV-infra.git
+cd ASV-infra
 
-# Cloner le backend et le frontend dans leurs sous-dossiers respectifs (obligatoire)
+# 2. Cloner le backend et le frontend DANS ce dossier, aux noms exacts attendus
+#    (backend/ et mobile-web/ — noms imposés par docker-compose.yml et par la config Expo)
 git clone https://github.com/M-BEDH/ASV-backend.git backend
 git clone https://github.com/M-BEDH/ASV-frontend.git mobile-web
+```
+
+Arborescence finale attendue :
+
+```
+ASV-infra/
+├── docker-compose.yml
+├── nginx/
+├── monitoring/
+├── backend/        ← cloné depuis M-BEDH/ASV-backend
+└── mobile-web/      ← cloné depuis M-BEDH/ASV-frontend
 ```
 
 ---
@@ -296,7 +310,7 @@ Connexion Grafana : identifiants définis dans `GRAFANA_ADMIN_USER` / `GRAFANA_A
 
 | Repo | Pipeline | Déclencheur |
 |---|---|---|
-| ASV (infra) | Validation `docker compose config` | push/PR sur `master` |
+| ASV-infra | Validation `docker compose config` | push/PR sur `master` |
 | ASV-backend | Tests PHPUnit avec MySQL réel | push/PR sur `master` |
 | ASV-frontend | TypeScript check + build Expo web | push/PR sur `master` |
 
