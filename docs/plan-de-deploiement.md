@@ -116,7 +116,7 @@ Renseigner dans `backend/.env.local` :
 | `DATABASE_URL` | `mysql://asv_user:MonUserSecret!@mysql:3306/asv_db?serverVersion=8.0&charset=utf8mb4` | L'hôte est `mysql` (nom du service Docker) |
 | `JWT_SECRET_KEY` | `%kernel.project_dir%/config/jwt/private.pem` | Chemin vers la clé privée |
 | `JWT_PUBLIC_KEY` | `%kernel.project_dir%/config/jwt/public.pem` | Chemin vers la clé publique |
-| `JWT_PASSPHRASE` | Passphrase choisie | Générée à l'étape 5 |
+| `JWT_PASSPHRASE` | Passphrase choisie | Générée à l'étape 7 |
 | `MAILER_DSN` | `smtp://mailer:1025` | `null://null` si mail non utilisé |
 | `CORS_ALLOW_ORIGIN` | `'^https?://(localhost\|127\.0\.0\.1)(:[0-9]+)?$'` | Adapter au domaine en production |
 
@@ -135,47 +135,9 @@ En production, remplacer `localhost:8080` par l'URL publique de l'API.
 
 ---
 
-## 5. Fichiers secrets non commités
+## 5. Démarrage de l'infrastructure
 
-### 5.1 Clés JWT (backend)
-
-Les clés RSA doivent être générées une seule fois et placées dans `backend/config/jwt/` :
-
-```bash
-# Depuis le container PHP (après docker compose up)
-docker compose exec php php bin/console lexik:jwt:generate-keypair
-```
-
-Cela crée :
-- `backend/config/jwt/private.pem`
-- `backend/config/jwt/public.pem`
-
-Ces fichiers sont ignorés par `.gitignore` et doivent être conservés en lieu sûr. Les régénérer invalide tous les tokens JWT existants.
-
-### 5.2 Credentials mysqld-exporter
-
-Créer le fichier `monitoring/mysqld-exporter/.my.cnf` (ignoré par `.gitignore`) :
-
-```ini
-[client]
-user=asv_user
-password=MonUserSecret!
-host=mysql
-port=3306
-```
-
-L'utilisateur MySQL doit avoir les droits suivants (à accorder après initialisation de la BDD) :
-
-```sql
-GRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO 'asv_user'@'%';
-FLUSH PRIVILEGES;
-```
-
----
-
-## 6. Démarrage de l'infrastructure
-
-### 6.1 Premier démarrage
+### 5.1 Premier démarrage
 
 ```bash
 # Depuis la racine du projet ASV/
@@ -193,7 +155,7 @@ Vérifier que tous les services sont up :
 docker compose ps
 ```
 
-### 6.2 Ordre de démarrage interne
+### 5.2 Ordre de démarrage interne
 
 Docker Compose gère les dépendances via `depends_on`. L'ordre effectif est :
 
@@ -206,36 +168,108 @@ prometheus → grafana
 
 ---
 
-## 7. Initialisation de la base de données
+## 6. Initialisation de la base de données
 
-### Option A — Depuis le dump SQL (environnement vierge)
+### 6.1 Base applicative (`asv_db`)
 
-Le fichier `asv_db.sql` à la racine contient le schéma complet exporté depuis phpMyAdmin :
-
-```bash
-docker compose exec -T mysql mysql -u asv_user -pMonUserSecret! asv_db < asv_db.sql
-```
-
-Puis appliquer les migrations Doctrine (12 migrations de mars-avril 2026) :
+Sur une base vide, une seule commande suffit à construire le schéma complet (pas de dump, pas d'étape intermédiaire) :
 
 ```bash
 docker compose exec php php bin/console doctrine:migrations:migrate --no-interaction
 ```
 
-### Option B — Depuis les entités Doctrine (base vide)
+> Au tout premier démarrage sur un volume MySQL, l'image MySQL auto-crée déjà la base `asv_db` (à partir de `MYSQL_DATABASE` dans `.env`) — `migrations:migrate` suffit directement. Si vous repartez d'une base supprimée (§6.3) ou d'un volume qui ne contient pas encore `asv_db`, créez-la d'abord :
+> ```bash
+> docker compose exec php php bin/console doctrine:database:create
+> ```
 
-Si la base est vide et qu'on préfère recréer le schéma depuis les entités :
+Vérifier l'état des migrations à tout moment :
 
 ```bash
-docker compose exec php php bin/console doctrine:schema:create --no-interaction
+docker compose exec php php bin/console doctrine:migrations:status
 ```
 
-> **Note :** La première migration (`Version20260310141259`) suppose que la table `users` existe déjà. En environnement vierge, utiliser l'Option A ou l'Option B (schema:create), pas `migrations:migrate` seul.
+### 6.2 Base de test (`asv_db_test`)
 
-### Données de développement (optionnel)
+PHPUnit utilise une base **séparée** de l'application (`config/packages/doctrine.yaml` définit `dbname_suffix: '_test%env(default::TEST_TOKEN)%'` pour l'environnement `test`). Elle n'est pas créée automatiquement et doit être initialisée une fois par environnement :
+
+```bash
+# 1. Donner les droits à l'utilisateur applicatif sur cette base (en root)
+docker compose exec mysql mysql -u root -p
+```
+À l'invite MySQL (mot de passe = `MYSQL_ROOT_PASSWORD` du `.env`) :
+```sql
+GRANT ALL PRIVILEGES ON asv_db_test.* TO 'asv_user'@'%';
+FLUSH PRIVILEGES;
+EXIT;
+```
+```bash
+# 2. Créer la base et jouer la même chaîne de migrations
+docker compose exec php php bin/console doctrine:database:create --env=test
+docker compose exec php php bin/console doctrine:migrations:migrate --no-interaction --env=test
+```
+
+### 6.3 Reset complet d'une base existante
+
+Pour repartir d'une base totalement propre (ex : volume MySQL corrompu ou données de démonstration à effacer), utiliser `doctrine:database:drop`/`create`, **pas** `doctrine:schema:drop` (ne supprime pas `doctrine_migration_versions`, donc un `migrations:migrate` qui suit ne reconstruit rien) :
+
+```bash
+docker compose exec php php bin/console doctrine:database:drop --force
+docker compose exec php php bin/console doctrine:database:create
+docker compose exec php php bin/console doctrine:migrations:migrate --no-interaction
+```
+
+### 6.4 Données de développement (optionnel)
 
 ```bash
 docker compose exec php php bin/console doctrine:fixtures:load --no-interaction
+```
+
+### 6.5 Dump SQL (`asv_db.sql`)
+
+Le fichier `asv_db.sql` à la racine est conservé comme **sauvegarde/référence** (schéma + historique des migrations à un instant donné), mais n'est **plus nécessaire** pour initialiser une base : la chaîne de migrations (§6.1) suffit à elle seule. Ne pas l'importer en complément de `migrations:migrate` — les deux ne doivent jamais être combinés sur la même base.
+
+---
+
+## 7. Fichiers secrets non commités
+
+### 7.1 Clés JWT (backend)
+
+Les clés RSA doivent être générées une seule fois et placées dans `backend/config/jwt/` :
+
+```bash
+# Depuis le container PHP (après docker compose up)
+docker compose exec php php bin/console lexik:jwt:generate-keypair
+```
+
+Cela crée :
+- `backend/config/jwt/private.pem`
+- `backend/config/jwt/public.pem`
+
+Ces fichiers sont ignorés par `.gitignore` et doivent être conservés en lieu sûr. Les régénérer invalide tous les tokens JWT existants.
+
+### 7.2 Credentials mysqld-exporter
+
+Créer le fichier `monitoring/mysqld-exporter/.my.cnf` (ignoré par `.gitignore`) :
+
+```ini
+[client]
+user=asv_user
+password=MonUserSecret!
+host=mysql
+port=3306
+```
+
+L'utilisateur MySQL doit avoir les droits suivants (à accorder après initialisation de la BDD) :
+
+```bash
+docker compose exec mysql mysql -u root -p
+```
+À l'invite MySQL (mot de passe = `MYSQL_ROOT_PASSWORD` du `.env`) :
+```sql
+GRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO 'asv_user'@'%';
+FLUSH PRIVILEGES;
+EXIT;
 ```
 
 ---
@@ -282,13 +316,6 @@ Dans l'interface Prometheus (`http://localhost:9090/targets`), les jobs suivants
 
 ```bash
 docker compose exec php php bin/phpunit
-```
-
-### 9.4 Droits MySQL pour mysqld-exporter
-
-```bash
-docker compose exec mysql mysql -u root -p${MYSQL_ROOT_PASSWORD} -e \
-  "GRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO 'asv_user'@'%'; FLUSH PRIVILEGES;"
 ```
 
 ---
@@ -345,16 +372,19 @@ git checkout <commit-précédent>
 docker compose up -d --build
 ```
 
-### Suppression complète (reset total)
+---
+
+## 13. Suppression complète (reset total)
+
+⚠️ Les données MySQL sont perdues. À utiliser uniquement pour repartir entièrement de zéro.
 
 ```bash
-# Arrête les services ET supprime les volumes (perte des données MySQL)
 docker compose down -v
 ```
 
 ---
 
-## 13. Récapitulatif des fichiers à créer manuellement
+## 14. Récapitulatif des fichiers à créer manuellement
 
 Ces fichiers sont ignorés par `.gitignore` et doivent être créés sur chaque environnement :
 
@@ -363,9 +393,9 @@ Ces fichiers sont ignorés par `.gitignore` et doivent être créés sur chaque 
 | `.env` | §4.1 | Variables infra Docker |
 | `backend/.env.local` | §4.2 | Variables Symfony |
 | `mobile-web/.env` | §4.3 | URL API frontend |
-| `monitoring/mysqld-exporter/.my.cnf` | §5.2 | Credentials MySQL exporter |
-| `backend/config/jwt/private.pem` | §5.1 | Clé privée JWT (générée) |
-| `backend/config/jwt/public.pem` | §5.1 | Clé publique JWT (générée) |
+| `monitoring/mysqld-exporter/.my.cnf` | §7.2 | Credentials MySQL exporter |
+| `backend/config/jwt/private.pem` | §7.1 | Clé privée JWT (générée) |
+| `backend/config/jwt/public.pem` | §7.1 | Clé publique JWT (générée) |
 
 ---
 
