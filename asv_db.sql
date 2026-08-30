@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : mysql
--- Généré le : lun. 13 avr. 2026 à 07:48
+-- Généré le : sam. 29 août 2026 à 17:20
 -- Version du serveur : 8.0.45
 -- Version de PHP : 8.3.26
 
@@ -53,14 +53,6 @@ CREATE TABLE `clinics` (
   `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Déchargement des données de la table `clinics`
---
-
-INSERT INTO `clinics` (`id`, `name`, `created_at`, `type`) VALUES
-('00a8c2b9-6b36-41f3-a4c7-571495c2ca9f', 'Ma clinique', '2026-03-11 10:22:01', 'clinique'),
-('68a5630b-1b47-45cc-9968-043b46b63245', 'Mon Association', '2026-04-13 07:11:41', 'association');
-
 -- --------------------------------------------------------
 
 --
@@ -88,7 +80,8 @@ INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_
 ('DoctrineMigrations\\Version20260401080944', '2026-04-01 08:12:33', 468),
 ('DoctrineMigrations\\Version20260408104822', '2026-04-08 10:51:34', 172),
 ('DoctrineMigrations\\Version20260408123306', '2026-04-08 12:36:41', 175),
-('DoctrineMigrations\\Version20260409085625', '2026-04-09 08:57:07', 294);
+('DoctrineMigrations\\Version20260409085625', '2026-04-09 08:57:07', 294),
+('DoctrineMigrations\\Version20260413103000', '2026-08-29 17:18:32', 74);
 
 -- --------------------------------------------------------
 
@@ -165,15 +158,10 @@ CREATE TABLE `users` (
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `role` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL,
-  `password` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `clinic_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `clinic_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_vet` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Déchargement des données de la table `users`
---
-
--- Aucun super admin dans le dump. Utiliser : bin/console app:create-super-admin
 
 -- --------------------------------------------------------
 
