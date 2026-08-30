@@ -24,7 +24,7 @@ services:
     volumes:
       - ./backend:/var/www/html # sync code local → conteneur (hot reload en dev, pas de rebuild nécessaire) 
     environment:
-        DATABASE_URL: "mysql://asv_user:asv_user@mysql:3306/asv_db?serverVersion=8.0&charset=utf8mb4"
+        DATABASE_URL: "mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mysql:3306/${MYSQL_DATABASE}?serverVersion=8.0&charset=utf8mb4"
     networks:
       - app-network
 
