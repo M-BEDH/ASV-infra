@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : mysql
--- Généré le : sam. 29 août 2026 à 17:20
+-- Généré le : dim. 30 août 2026 à 11:32
 -- Version du serveur : 8.0.45
 -- Version de PHP : 8.3.26
 
@@ -28,16 +28,16 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `animals` (
-  `id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `espece` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `race` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nom` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `espece` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `race` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `date_naissance` date DEFAULT NULL,
-  `remarques` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `proprietaire_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `created_by` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `remarques` longtext COLLATE utf8mb4_unicode_ci,
+  `proprietaire_id` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_by` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` datetime NOT NULL,
-  `clinic_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `clinic_id` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -47,10 +47,10 @@ CREATE TABLE `animals` (
 --
 
 CREATE TABLE `clinics` (
-  `id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL,
-  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
+  `type` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -70,18 +70,19 @@ CREATE TABLE `doctrine_migration_versions` (
 --
 
 INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_time`) VALUES
-('DoctrineMigrations\\Version20260310141259', '2026-03-11 10:20:59', 637),
-('DoctrineMigrations\\Version20260310200000', '2026-03-11 10:21:00', 525),
-('DoctrineMigrations\\Version20260317000000', '2026-03-23 12:45:03', 35),
-('DoctrineMigrations\\Version20260317000001', '2026-03-23 12:45:03', 48),
-('DoctrineMigrations\\Version20260317000002', '2026-03-23 12:45:03', 58),
-('DoctrineMigrations\\Version20260318151137', '2026-03-23 12:45:03', 30),
-('DoctrineMigrations\\Version20260328140532', '2026-03-31 15:23:18', 86),
-('DoctrineMigrations\\Version20260401080944', '2026-04-01 08:12:33', 468),
-('DoctrineMigrations\\Version20260408104822', '2026-04-08 10:51:34', 172),
-('DoctrineMigrations\\Version20260408123306', '2026-04-08 12:36:41', 175),
-('DoctrineMigrations\\Version20260409085625', '2026-04-09 08:57:07', 294),
-('DoctrineMigrations\\Version20260413103000', '2026-08-29 17:18:32', 74);
+('DoctrineMigrations\\Version20260301000000', '2026-08-30 11:26:07', 194),
+('DoctrineMigrations\\Version20260310141259', '2026-08-30 11:26:07', 96),
+('DoctrineMigrations\\Version20260310200000', '2026-08-30 11:26:08', 350),
+('DoctrineMigrations\\Version20260317000000', '2026-08-30 11:26:08', 42),
+('DoctrineMigrations\\Version20260317000001', '2026-08-30 11:26:08', 43),
+('DoctrineMigrations\\Version20260317000002', '2026-08-30 11:26:08', 81),
+('DoctrineMigrations\\Version20260318151137', '2026-08-30 11:26:08', 32),
+('DoctrineMigrations\\Version20260328140532', '2026-08-30 11:26:08', 55),
+('DoctrineMigrations\\Version20260401080944', '2026-08-30 11:26:08', 535),
+('DoctrineMigrations\\Version20260408104822', '2026-08-30 11:26:09', 210),
+('DoctrineMigrations\\Version20260408123306', '2026-08-30 11:26:09', 109),
+('DoctrineMigrations\\Version20260409085625', '2026-08-30 11:26:09', 40),
+('DoctrineMigrations\\Version20260413103000', '2026-08-30 11:26:09', 44);
 
 -- --------------------------------------------------------
 
@@ -90,15 +91,15 @@ INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_
 --
 
 CREATE TABLE `medical_consultations` (
-  `id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `animal_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `animal_id` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `date_consultation` datetime NOT NULL,
-  `veterinaire_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `motif` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `compte_rendu` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `traitements` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `veterinaire_id` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `motif` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `compte_rendu` longtext COLLATE utf8mb4_unicode_ci,
+  `traitements` longtext COLLATE utf8mb4_unicode_ci,
   `created_at` datetime NOT NULL,
-  `clinic_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `clinic_id` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -124,15 +125,15 @@ CREATE TABLE `messenger_messages` (
 --
 
 CREATE TABLE `owners` (
-  `id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `nom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `prenom` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `adresse` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
-  `telephone` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_by` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nom` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `prenom` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `adresse` longtext COLLATE utf8mb4_unicode_ci,
+  `telephone` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_by` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` datetime NOT NULL,
-  `user_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL
+  `user_id` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -153,15 +154,15 @@ CREATE TABLE `owner_clinic` (
 --
 
 CREATE TABLE `users` (
-  `id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `role` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL,
-  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `clinic_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `clinic_id` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `is_vet` tinyint(1) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ;
 
 -- --------------------------------------------------------
 
