@@ -4,6 +4,8 @@
 
 @startuml diagramme_cas_utilisation
 
+title Diagramme de cas d'utilisation — ASV
+
 left to right direction
 skinparam packageStyle rectangle
 skinparam actorStyle awesome
@@ -129,18 +131,10 @@ CLIENT --> UC15
 ' Diagramme de classes — ASV
 ' ============================================================
 
-@startuml diagramme_classes                                                                                                                                                                        
-                                                                                                                                                                                                     
-  skinparam classAttributeIconSize 0                                                                                                                                                                 
-  skinparam classFontStyle bold                                                                                                                                                                      
-  skinparam backgroundColor #FAFAFA                                                                                                                                                                  
-  skinparam class {                                                                                                                                                                                  
-      BackgroundColor #EEF4FF                                                                                                                                                                        
-      BorderColor #4A6FA5                                                                                                                                                                            
-      HeaderBackgroundColor #4A6FA5                                                                                                                                                                  
-      HeaderFontColor #FFFFFF
-      ArrowColor #333333                                                                                                                                                                             
-  }
+@startuml diagramme_classes
+
+title Diagramme de classes — ASV
+
   skinparam shadowing false                                                                                                                                                                          
   skinparam roundcorner 8
 
@@ -199,7 +193,7 @@ CLIENT --> UC15
                   
   Clinic "1" -- "0..*" User : emploie (staff)
   Clinic "0..*" -- "0..*" User : rattache (client)
-  Clinic "0..*" -- "0..*" Owner : gère                                                                                                                                                               
+  Clinic "0..*" -- "0..*" Owner : gère\n(clinique uniquement)                                                                                                                                                               
   Clinic "1" -- "0..*" Animal : héberge
   Clinic "1" -- "0..*" MedicalConsultation : contient                                                                                                                                                
                                                                                                                                                                                                      
@@ -208,20 +202,19 @@ CLIENT --> UC15
   User "1" --> "0..*" Animal : crée
   User "1" --> "0..*" MedicalConsultation : effectue
                                                                                                                                                                                                      
-  Owner "1" --> "0..*" Animal : possède
+  Owner "0..1" --> "0..*" Animal : possède
   Animal "1" --> "0..*" MedicalConsultation : fait l'objet de                                                                                                                                        
                   
   @enduml
+
+  
 ' ============================================================
 ' Diagramme de séquence — Authentification JWT
 ' ============================================================
 
 @startuml diagramme_sequence_auth
 
-skinparam sequenceArrowThickness 2
-skinparam sequenceParticipantBorderColor #1E3A5F
-skinparam sequenceParticipantBackgroundColor #EAF2FB
-skinparam noteBackgroundColor #FFF9C4
+title Diagramme de séquence — Authentification JWT
 
 actor Utilisateur
 participant "Frontend\n(Expo/RN)" as Frontend
@@ -286,10 +279,7 @@ Frontend --> Utilisateur : Affiche les données
 
 @startuml diagramme_sequence_consultation
 
-skinparam sequenceArrowThickness 2
-skinparam sequenceParticipantBorderColor #1E3A5F
-skinparam sequenceParticipantBackgroundColor #EAF2FB
-skinparam noteBackgroundColor #FFF9C4
+title Diagramme de séquence — Création d'une consultation médicale
 
 actor Veterinaire
 participant "Frontend\n(Expo/RN)" as Frontend
