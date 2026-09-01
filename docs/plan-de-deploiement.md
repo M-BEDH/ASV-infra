@@ -48,7 +48,6 @@ Le backend et le frontend sont des sous-répertoires (`backend/` et `mobile-web/
 - Node.js 20+ et npm
 - Expo CLI : `npm install -g expo-cli`
 - Android : Android Studio + émulateur ou appareil physique
-- iOS : Xcode sur macOS uniquement
 
 ---
 

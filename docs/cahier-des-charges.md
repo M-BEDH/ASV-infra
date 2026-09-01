@@ -161,7 +161,7 @@ Interface utilisable en environnement clinique (tablette/desktop) comme sur le t
 
 ### 5.4 Multi-plateforme (BF09)
 
-L'application doit fonctionner sur iOS, Android et Web à partir d'une base de code commune.
+L'application doit fonctionner sur Android et Web à partir d'une base de code commune.
 
 ---
 
@@ -173,6 +173,6 @@ Le projet est considéré conforme au besoin si :
 2. Un propriétaire n'est jamais rattaché à un refuge ou une association, quelle que soit la voie de création utilisée — vérifiable par un scénario de bout en bout (création en refuge → adoption → inscription en clinique).
 3. Toute route de l'API, hors liste blanche publique documentée, exige une authentification valide.
 4. La suppression d'un compte propriétaire ou utilisateur anonymise ses données personnelles sans les effacer physiquement, ni casser l'historique médical associé.
-5. L'application est utilisable sans divergence fonctionnelle majeure sur iOS, Android et Web.
+5. L'application est utilisable sans divergence fonctionnelle majeure sur Android et Web.
 6. Les indicateurs de connexion et d'inscription par rôle sont visibles dans le tableau de bord de supervision.
 
