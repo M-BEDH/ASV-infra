@@ -90,7 +90,7 @@ Vérifier le bon fonctionnement des fonctions utilitaires, des entités métier 
 
 ## 8. Tests unitaires frontend — Jest
 
-### 3.1 Fonction `pad()` — `utils/dateUtils.ts`
+### 8.1 Fonction `pad()` — `utils/dateUtils.ts`
 
 | ID | Fonctionnalité | Entrée | Résultat attendu | Statut |
 |---|---|---|---|---|
@@ -98,7 +98,7 @@ Vérifier le bon fonctionnement des fonctions utilitaires, des entités métier 
 | UT-02 | Ne modifie pas un nombre à 2 chiffres | `pad(12)` | `'12'` | ✅ |
 | UT-03 | Gère le zéro | `pad(0)` | `'00'` | ✅ |
 
-### 3.2 Fonction `dateToDisplay()` — `utils/dateUtils.ts`
+### 8.2 Fonction `dateToDisplay()` — `utils/dateUtils.ts`
 
 | ID | Fonctionnalité | Entrée | Résultat attendu | Statut |
 |---|---|---|---|---|
@@ -106,7 +106,7 @@ Vérifier le bon fonctionnement des fonctions utilitaires, des entités métier 
 | UT-05 | Formate une date en fin de mois | `new Date(2023, 11, 31, 23, 59)` | `'31-12-2023 23:59'` | ✅ |
 | UT-06 | Formate minuit (00:00) | `new Date(2024, 5, 1, 0, 0)` | `'01-06-2024 00:00'` | ✅ |
 
-### 3.3 Composant `FieldLabel` — `components/FieldLabel.tsx`
+### 8.3 Composant `FieldLabel` — `components/FieldLabel.tsx`
 
 | ID | Fonctionnalité | Entrée | Résultat attendu | Statut |
 |---|---|---|---|---|
@@ -120,7 +120,7 @@ Vérifier le bon fonctionnement des fonctions utilitaires, des entités métier 
 
 ## 9. Tests unitaires backend — PHPUnit
 
-### 4.1 Entité `Animal` — `tests/Entity/AnimalTest.php`
+### 9.1 Entité `Animal` — `tests/Entity/AnimalTest.php`
 
 | ID | Fonctionnalité | Étapes | Résultat attendu | Statut |
 |---|---|---|---|---|
@@ -130,7 +130,7 @@ Vérifier le bon fonctionnement des fonctions utilitaires, des entités métier 
 | UT-10 | `createdAt` défini à la création | Instancier un Animal | `createdAt` est un `DateTimeImmutable` non nul | ✅ |
 | UT-11 | Valeurs optionnelles nulles par défaut | Instancier un Animal sans données | Tous les champs optionnels valent `null` | ✅ |
 
-### 4.2 Entité `User` — `tests/Entity/UserTest.php`
+### 9.2 Entité `User` — `tests/Entity/UserTest.php`
 
 | ID | Fonctionnalité | Étapes | Résultat attendu | Statut |
 |---|---|---|---|---|
@@ -147,7 +147,7 @@ Vérifier le bon fonctionnement des fonctions utilitaires, des entités métier 
 
 ## 10. Tests d'intégration backend — PHPUnit
 
-### 5.1 Authentification — `tests/Controller/UserControllerTest.php`
+### 10.1 Authentification — `tests/Controller/UserControllerTest.php`
 
 | ID | Fonctionnalité | Étapes | Résultat attendu | Statut |
 |---|---|---|---|---|
@@ -158,7 +158,7 @@ Vérifier le bon fonctionnement des fonctions utilitaires, des entités métier 
 | IT-05 | Accès à une route protégée sans token | GET route protégée sans header | HTTP 401 | ✅ |
 | IT-06 | Inscription avec email déjà utilisé | POST `/api/auth/register` avec email existant | HTTP 409 ou erreur de validation | ✅ |
 
-### 5.2 Animaux — `tests/Controller/AnimalControllerTest.php`
+### 10.2 Animaux — `tests/Controller/AnimalControllerTest.php`
 
 | ID | Fonctionnalité | Étapes | Résultat attendu | Statut |
 |---|---|---|---|---|
@@ -170,7 +170,7 @@ Vérifier le bon fonctionnement des fonctions utilitaires, des entités métier 
 | IT-12 | Accès refusé sans token | GET `/api/animals` sans header | HTTP 401 | ✅ |
 | IT-13 | Animal inexistant | GET `/api/animals/{id_inconnu}` | HTTP 404 | ✅ |
 
-### 5.3 Propriétaires — `tests/Controller/OwnerControllerTest.php`
+### 10.3 Propriétaires — `tests/Controller/OwnerControllerTest.php`
 
 | ID | Fonctionnalité | Étapes | Résultat attendu | Statut |
 |---|---|---|---|---|
@@ -181,7 +181,7 @@ Vérifier le bon fonctionnement des fonctions utilitaires, des entités métier 
 | IT-18 | Supprimer un propriétaire | DELETE `/api/owners/{id}` | HTTP 204 | ✅ |
 | IT-19 | Accès refusé sans token | GET `/api/owners` sans header | HTTP 401 | ✅ |
 
-### 5.4 Consultations médicales — `tests/Controller/MedicalConsultationControllerTest.php`
+### 10.4 Consultations médicales — `tests/Controller/MedicalConsultationControllerTest.php`
 
 | ID | Fonctionnalité | Étapes | Résultat attendu | Statut |
 |---|---|---|---|---|
@@ -197,7 +197,7 @@ Vérifier le bon fonctionnement des fonctions utilitaires, des entités métier 
 | IT-29 | Supprimer une consultation | DELETE `/api/consultations/{id}` | HTTP 204 | ✅ |
 | IT-30 | Suppression d'une consultation inexistante | DELETE `/api/consultations/{id_inconnu}` | HTTP 404 | ✅ |
 
-### 5.5 Scénario adoption — `tests/Controller/AdoptionFlowTest.php`
+### 10.5 Scénario adoption — `tests/Controller/AdoptionFlowTest.php`
 
 | ID | Fonctionnalité | Étapes | Résultat attendu | Statut |
 |---|---|---|---|---|
