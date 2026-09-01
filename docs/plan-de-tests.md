@@ -1,7 +1,7 @@
 # Plan de tests — Application ASV
 
 **Projet :** Application de Suivi Vétérinaire (ASV)
-**Titre professionnel visé :** CDA — RNCP36490
+**Titre professionnel visé :** CDA — RNCP37873
 **Date :** 27/03/2026
 **Auteure :** Mélissa Bedhomme
 
@@ -186,12 +186,22 @@ Vérifier le bon fonctionnement des fonctions utilitaires, des entités métier 
 | ID | Fonctionnalité | Étapes | Résultat attendu | Statut |
 |---|---|---|---|---|
 | IT-20 | Lister les consultations | GET `/api/consultations` avec token | HTTP 200, tableau JSON | ✅ |
-| IT-21 | Créer une consultation | POST `/api/consultations` avec données valides | HTTP 201, consultation créée | ✅ |
-| IT-22 | Lire une consultation par ID | GET `/api/consultations/{id}` | HTTP 200, données de la consultation | ✅ |
-| IT-23 | Modifier une consultation | PUT `/api/consultations/{id}` | HTTP 200, données mises à jour | ✅ |
-| IT-24 | Supprimer une consultation | DELETE `/api/consultations/{id}` | HTTP 204 | ✅ |
-| IT-25 | Accès refusé sans token | GET `/api/consultations` sans header | HTTP 401 | ✅ |
-| IT-26 | Consultation inexistante | GET `/api/consultations/{id_inconnu}` | HTTP 404 | ✅ |
+| IT-21 | Lire une consultation par ID | GET `/api/consultations/{id}` | HTTP 200, données de la consultation | ✅ |
+| IT-22 | Consultation inexistante | GET `/api/consultations/{id_inconnu}` | HTTP 404 | ✅ |
+| IT-23 | Lecture refusée entre cliniques différentes | GET `/api/consultations/{id}` avec le token d'un vétérinaire d'une autre clinique | HTTP 403 (`MedicalConsultationVoter::canViewAnimal()`) | ✅ |
+| IT-24 | Créer une consultation | POST `/api/consultations` avec données valides | HTTP 201, consultation créée | ✅ |
+| IT-25 | Créer une consultation avec champs manquants | POST `/api/consultations` sans `animalId`/`dateConsultation` | HTTP 400 | ✅ |
+| IT-26 | Création refusée pour un client | POST `/api/consultations` avec token client | HTTP 403 | ✅ |
+| IT-27 | Création refusée pour un bénévole | POST `/api/consultations` avec token bénévole | HTTP 403 | ✅ |
+| IT-28 | Modifier une consultation | PUT `/api/consultations/{id}` | HTTP 200, données mises à jour | ✅ |
+| IT-29 | Supprimer une consultation | DELETE `/api/consultations/{id}` | HTTP 204 | ✅ |
+| IT-30 | Suppression d'une consultation inexistante | DELETE `/api/consultations/{id_inconnu}` | HTTP 404 | ✅ |
+
+### 5.5 Scénario adoption — `tests/Controller/AdoptionFlowTest.php`
+
+| ID | Fonctionnalité | Étapes | Résultat attendu | Statut |
+|---|---|---|---|---|
+| IT-31 | Adoption en refuge puis inscription client en vraie clinique | Recueil d'un animal en refuge, création d'un Owner (trace de l'adoptant, non rattaché au refuge), tentative de `register` refusée avant qu'une vraie clinique n'intervienne, adoption, puis inscription du même email par une vraie clinique | L'Owner créé par le refuge n'a aucune clinique rattachée ; la clinique crée un nouvel Owner (pas de réutilisation) ; le précompte client final n'est lié qu'à la vraie clinique | ✅ |
 
 ---
 
@@ -202,5 +212,5 @@ Vérifier le bon fonctionnement des fonctions utilitaires, des entités métier 
 | Tests unitaires frontend | Jest | 6 | ✅ 6 passés |
 | Tests de composants frontend | Jest + @testing-library/react-native | 3 | ✅ 3 passés |
 | Tests unitaires backend | PHPUnit | 13 | ✅ 13 passés |
-| Tests d'intégration backend | PHPUnit | 26 | ✅ 26 passés |
-| **Total** | | **48** | **✅ 48 passés** |
+| Tests d'intégration backend | PHPUnit | 31 | ✅ 31 passés |
+| **Total** | | **53** | **✅ 53 passés** |
