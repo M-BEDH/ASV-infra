@@ -155,8 +155,6 @@ title Diagramme de classes — ASV
       +password : String [0..1]
       +createdAt : DateTime
       --
-      +login()
-      +register()                                                                                                                                                                                    
       +anonymize()
   }                                                                                                                                                                                                  
                   
@@ -244,14 +242,14 @@ else N > 1 comptes (staff multi-établissements)
     API -> Auth : handle(request)
     Auth -> BDD : SELECT user WHERE email = ?\nAND clinic_id = ?
     BDD --> Auth : User ciblé
-    Auth -> Auth : Vérifie password (Argon2id)
+    Auth -> Auth : Vérifie password (hachage auto)
     Auth -> Auth : Génère JWT signé RS256\n{userId, email, role, clinicId}
     Auth --> Frontend : 200 OK\n{token, user: {id, email, name, role, clinicId, clinicName}}
     Frontend -> Frontend : Stocke token\n(AsyncStorage web / SecureStore mobile)
     Frontend --> Utilisateur : Redirige vers tableau de bord
 
 else 1 compte trouvé (cas standard)
-    Auth -> Auth : Vérifie password (Argon2id)
+    Auth -> Auth : Vérifie password (hachage auto)
     Auth -> Auth : Génère JWT signé RS256\n{userId, email, role, clinicId/clinicIds[]}
     Auth --> Frontend : 200 OK\n{token, user: {...}}
     Frontend -> Frontend : Stocke token\n(AsyncStorage web / SecureStore mobile)
@@ -312,7 +310,9 @@ else Rôle autorisé (responsable / vétérinaire / assistant)
 
     else Animal trouvé → doShowAnimal()
         note over Controller
-            Si animal.owner existe :
+            Si me.clinic.type = refuge/association :
+              vérifie animal.clinic_id === me.clinic_id
+            Sinon, si animal.owner existe :
               vérifie que owner.clinics
               contient me.getClinic()
               (ManyToMany owner_clinic)
