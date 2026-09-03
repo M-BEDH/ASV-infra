@@ -99,7 +99,7 @@ Six profils utilisateurs doivent être servis par l'application, avec des besoin
 |---|---|---|
 | Client | Ses propres animaux et consultations, toutes cliniques confondues | Aucune |
 | Bénévole | Établissement affecté | Animaux, uniquement en refuge/association ; jamais propriétaires ni consultations |
-| Assistant | Établissement affecté | Animaux et propriétaires de son établissement ; jamais consultations |
+| Assistant | Établissement affecté | Animaux, propriétaires et consultations de son établissement (mêmes droits que le vétérinaire) |
 | Vétérinaire | Établissement affecté | Animaux, propriétaires et consultations de son établissement |
 | Responsable | Établissement affecté | Idem vétérinaire + gestion d'équipe + informations de l'établissement |
 | Super-administrateur | Tous établissements | Tous établissements, via l'interface d'administration |
@@ -134,7 +134,7 @@ Création et modification réservées au personnel vétérinaire qualifié (vét
 
 ### 4.6 Gestion d'équipe
 
-Création de comptes pour le personnel (assistant, vétérinaire, bénévole), réservée au responsable, limitée à son propre établissement. Modification de rôle et suppression de compte réservées au responsable/vétérinaire.
+Création de comptes pour le personnel (assistant, vétérinaire, bénévole), réservée au responsable, limitée à son propre établissement. Modification de rôle réservée au responsable. Suppression de compte réservée au responsable ou au vétérinaire.
 
 ### 4.7 Administration (BF08)
 
