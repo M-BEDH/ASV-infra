@@ -65,7 +65,7 @@ Six profils utilisateurs doivent être servis par l'application, avec des besoin
 
 - **Contexte** : 26 ans, assistante dans une clinique classique, gère l'accueil et la mise à jour des dossiers.
 - **Objectifs** : créer et tenir à jour les fiches animaux et propriétaires de sa clinique, préparer les dossiers avant consultation.
-- **Besoins d'accès** : écriture sur les fiches animaux/propriétaires de sa clinique ; aucun accès à la création/modification de consultations médicales, ni à la gestion d'équipe.
+- **Besoins d'accès** : écriture sur les fiches animaux/propriétaires de sa clinique ; peut créer et modifier des consultations médicales (mêmes droits que le vétérinaire sur ce point, mais ne peut pas être désigné comme le vétérinaire traitant) ; aucun accès à la gestion d'équipe.
 - **Niveau numérique** : intermédiaire à bon.
 
 ### Persona 4 — Dr. Moreau, Vétérinaire
@@ -130,7 +130,7 @@ Création, consultation, modification, suppression d'une fiche animal. Un animal
 
 ### 4.5 Consultations médicales (BF05)
 
-Création et modification réservées au personnel vétérinaire qualifié (vétérinaire, responsable). Une consultation comporte un motif (obligatoire), un compte-rendu et des traitements (facultatifs). Visibilité en lecture adaptée selon le profil (client : ses animaux ; staff : son établissement).
+Création et modification réservées au personnel vétérinaire qualifié (vétérinaire, responsable, assistant) — seul un utilisateur avec `isVet` à vrai (typiquement un vétérinaire, ou un responsable qui l'est aussi) peut être désigné comme praticien traitant sur la consultation. Une consultation comporte un motif (obligatoire), un compte-rendu et des traitements (facultatifs). Visibilité en lecture adaptée selon le profil (client : ses animaux ; staff : son établissement).
 
 ### 4.6 Gestion d'équipe
 
