@@ -140,7 +140,7 @@ Vérifier le bon fonctionnement des fonctions utilitaires, des entités métier 
 | UT-15 | Rôle vétérinaire | Définir rôle `veterinaire` | `getRoles()` retourne `['ROLE_VETERINAIRE']` | ✅ |
 | UT-16 | Rôle client | Définir rôle `client` | `getRoles()` retourne `['ROLE_CLIENT']` | ✅ |
 | UT-17 | `createdAt` défini à la création | Instancier un User | `createdAt` est un `DateTimeImmutable` non nul | ✅ |
-| UT-18 | `getUserIdentifier()` retourne l'email | Appeler `getUserIdentifier()` | Retourne l'adresse email | ✅ |
+| UT-18 | `getUserIdentifier()` retourne l'ID | Appeler `getUserIdentifier()` | Retourne l'UUID de l'utilisateur (pas l'email) | ✅ |
 | UT-19 | Validation format email | Passer un email invalide au validateur Symfony | Une violation de contrainte est détectée | ✅ |
 
 ---
@@ -151,12 +151,12 @@ Vérifier le bon fonctionnement des fonctions utilitaires, des entités métier 
 
 | ID | Fonctionnalité | Étapes | Résultat attendu | Statut |
 |---|---|---|---|---|
-| IT-01 | Inscription d'un nouvel utilisateur | POST `/api/auth/register` avec email/password | HTTP 201, utilisateur créé | ✅ |
+| IT-01 | Activation d'un pré-compte | POST `/api/auth/register` avec email/password sur un pré-compte existant | HTTP 201, utilisateur créé | ✅ |
 | IT-02 | Connexion valide | POST `/api/auth/login` avec identifiants corrects | HTTP 200, token JWT retourné | ✅ |
 | IT-03 | Connexion avec mauvais mot de passe | POST `/api/auth/login` avec mauvais password | HTTP 401 | ✅ |
-| IT-04 | Accès à une route protégée avec token | GET route protégée + header Authorization | HTTP 200 | ✅ |
-| IT-05 | Accès à une route protégée sans token | GET route protégée sans header | HTTP 401 | ✅ |
-| IT-06 | Inscription avec email déjà utilisé | POST `/api/auth/register` avec email existant | HTTP 409 ou erreur de validation | ✅ |
+| IT-04 | Accès à une route protégée avec token | GET `/api/auth/me` avec header Authorization | HTTP 200, email de l'utilisateur retourné | ✅ |
+| IT-05 | Inscription avec mot de passe manquant | POST `/api/auth/register` sans `password` | HTTP 400 | ✅ |
+| IT-06 | Ré-inscription d'un compte déjà activé | POST `/api/auth/register` une seconde fois pour le même email (déjà activé) | HTTP 403 | ✅ |
 
 ### 10.2 Animaux — `tests/Controller/AnimalControllerTest.php`
 
@@ -164,11 +164,11 @@ Vérifier le bon fonctionnement des fonctions utilitaires, des entités métier 
 |---|---|---|---|---|
 | IT-07 | Lister les animaux | GET `/api/animals` avec token | HTTP 200, tableau JSON | ✅ |
 | IT-08 | Créer un animal | POST `/api/animals` avec données valides | HTTP 201, animal créé | ✅ |
-| IT-09 | Lire un animal par ID | GET `/api/animals/{id}` | HTTP 200, données de l'animal | ✅ |
+| IT-09 | Créer un animal avec champs manquants | POST `/api/animals` sans `espece` | HTTP 400 | ✅ |
 | IT-10 | Modifier un animal | PUT `/api/animals/{id}` | HTTP 200, données mises à jour | ✅ |
 | IT-11 | Supprimer un animal | DELETE `/api/animals/{id}` | HTTP 204 | ✅ |
-| IT-12 | Accès refusé sans token | GET `/api/animals` sans header | HTTP 401 | ✅ |
-| IT-13 | Animal inexistant | GET `/api/animals/{id_inconnu}` | HTTP 404 | ✅ |
+| IT-12 | Création refusée pour un client | POST `/api/animals` avec token client | HTTP 403 | ✅ |
+| IT-13 | Suppression d'un animal inexistant | DELETE `/api/animals/{id_inconnu}` | HTTP 404 | ✅ |
 
 ### 10.3 Propriétaires — `tests/Controller/OwnerControllerTest.php`
 
@@ -176,10 +176,10 @@ Vérifier le bon fonctionnement des fonctions utilitaires, des entités métier 
 |---|---|---|---|---|
 | IT-14 | Lister les propriétaires | GET `/api/owners` avec token | HTTP 200, tableau JSON | ✅ |
 | IT-15 | Créer un propriétaire | POST `/api/owners` avec données valides | HTTP 201, propriétaire créé | ✅ |
-| IT-16 | Lire un propriétaire par ID | GET `/api/owners/{id}` | HTTP 200, données du propriétaire | ✅ |
+| IT-16 | Créer un propriétaire avec champs manquants | POST `/api/owners` avec seulement `nom` (sans `prenom` ni `email`) | HTTP 400 | ✅ |
 | IT-17 | Modifier un propriétaire | PUT `/api/owners/{id}` | HTTP 200, données mises à jour | ✅ |
 | IT-18 | Supprimer un propriétaire | DELETE `/api/owners/{id}` | HTTP 204 | ✅ |
-| IT-19 | Accès refusé sans token | GET `/api/owners` sans header | HTTP 401 | ✅ |
+| IT-19 | Suppression d'un propriétaire inexistant | DELETE `/api/owners/{id_inconnu}` | HTTP 404 | ✅ |
 
 ### 10.4 Consultations médicales — `tests/Controller/MedicalConsultationControllerTest.php`
 
@@ -196,12 +196,14 @@ Vérifier le bon fonctionnement des fonctions utilitaires, des entités métier 
 | IT-28 | Modifier une consultation | PUT `/api/consultations/{id}` | HTTP 200, données mises à jour | ✅ |
 | IT-29 | Supprimer une consultation | DELETE `/api/consultations/{id}` | HTTP 204 | ✅ |
 | IT-30 | Suppression d'une consultation inexistante | DELETE `/api/consultations/{id_inconnu}` | HTTP 404 | ✅ |
+| IT-31 | Création autorisée pour un assistant | POST `/api/consultations` avec token assistant et `veterinaireId` d'un vétérinaire de la même clinique | HTTP 201, consultation créée, `veterinaire.id` = celui fourni | ✅ |
+| IT-32 | Création refusée pour un créateur non vétérinaire sans `veterinaireId` | POST `/api/consultations` avec token assistant, sans `veterinaireId` | HTTP 400 (aucune auto-assignation d'un non-vétérinaire) | ✅ |
 
 ### 10.5 Scénario adoption — `tests/Controller/AdoptionFlowTest.php`
 
 | ID | Fonctionnalité | Étapes | Résultat attendu | Statut |
 |---|---|---|---|---|
-| IT-31 | Adoption en refuge puis inscription client en vraie clinique | Recueil d'un animal en refuge, création d'un Owner (trace de l'adoptant, non rattaché au refuge), tentative de `register` refusée avant qu'une vraie clinique n'intervienne, adoption, puis inscription du même email par une vraie clinique | L'Owner créé par le refuge n'a aucune clinique rattachée ; la clinique crée un nouvel Owner (pas de réutilisation) ; le précompte client final n'est lié qu'à la vraie clinique | ✅ |
+| IT-33 | Adoption en refuge puis inscription client en vraie clinique | Recueil d'un animal en refuge, création d'un Owner (trace de l'adoptant, non rattaché au refuge), tentative de `register` refusée avant qu'une vraie clinique n'intervienne, adoption, puis inscription du même email par une vraie clinique | L'Owner créé par le refuge n'a aucune clinique rattachée ; la clinique crée un nouvel Owner (pas de réutilisation) ; le précompte client final n'est lié qu'à la vraie clinique | ✅ |
 
 ---
 
@@ -212,5 +214,5 @@ Vérifier le bon fonctionnement des fonctions utilitaires, des entités métier 
 | Tests unitaires frontend | Jest | 6 | ✅ 6 passés |
 | Tests de composants frontend | Jest + @testing-library/react-native | 3 | ✅ 3 passés |
 | Tests unitaires backend | PHPUnit | 13 | ✅ 13 passés |
-| Tests d'intégration backend | PHPUnit | 31 | ✅ 31 passés |
-| **Total** | | **53** | **✅ 53 passés** |
+| Tests d'intégration backend | PHPUnit | 33 | ✅ 33 passés |
+| **Total** | | **55** | **✅ 55 passés** |

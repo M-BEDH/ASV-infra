@@ -16,7 +16,7 @@ Le projet ASV est composé de **trois dépôts Git** déployés ensemble :
 
 Le backend et le frontend sont des sous-répertoires (`backend/` et `mobile-web/`) du repo principal, chacun avec son propre `.git`.
 
-⚠️ **Ce ne sont pas des submodules Git déclarés** — `backend/` et `mobile-web/` sont même listés dans le `.gitignore` du repo principal (`ASV-infra` ne connaît pas leur contenu). Le lien entre les trois dépôts est **purement une convention de chemin** : `docker-compose.yml` référence `./backend` en chemin relatif (volume nginx ligne 9, contexte de build PHP ligne 18). Cloner les trois dépôts côte à côte (frères) au lieu de les imbriquer comme décrit en §3 casse donc `docker compose up` (nginx ne trouve rien à monter, le build PHP échoue).
+⚠️ **Ce ne sont pas des submodules Git déclarés** — `backend/` et `mobile-web/` sont même listés dans le `.gitignore` du repo principal (`ASV-infra` ne connaît pas leur contenu). Le lien entre les trois dépôts est **purement une convention de chemin** : `docker-compose.yml` référence `./backend` en chemin relatif (volume nginx ligne 11, contexte de build PHP ligne 20). Cloner les trois dépôts côte à côte (frères) au lieu de les imbriquer comme décrit en §3 casse donc `docker compose up` (nginx ne trouve rien à monter, le build PHP échoue).
 
 ### Services Docker
 
@@ -117,7 +117,7 @@ Renseigner dans `backend/.env.local` :
 | `JWT_PUBLIC_KEY` | `%kernel.project_dir%/config/jwt/public.pem` | Chemin vers la clé publique |
 | `JWT_PASSPHRASE` | Passphrase choisie | Générée à l'étape 7 |
 | `MAILER_DSN` | `smtp://mailer:1025` | `null://null` si mail non utilisé |
-| `CORS_ALLOW_ORIGIN` | `'^https?://(localhost\|127\.0\.0\.1)(:[0-9]+)?$'` | Adapter au domaine en production |
+| `CORS_ALLOW_ORIGIN` | présente dans le fichier mais sans effet | Le vrai réglage CORS est `allow_origin` dans `config/packages/nelmio_cors.yaml` (actuellement `['*']`) |
 
 ### 4.3 Frontend Expo
 
@@ -340,7 +340,7 @@ Connexion Grafana : identifiants définis dans `GRAFANA_ADMIN_USER` / `GRAFANA_A
 | ASV-backend | Tests PHPUnit avec MySQL réel | push/PR sur `master` |
 | ASV-frontend | TypeScript check + build Expo web | push/PR sur `master` |
 
-Les secrets CI sont configurés dans **GitHub → Settings → Secrets** de chaque repo.
+Aucun secret GitHub n'est configuré à ce jour : les trois pipelines n'utilisent que des valeurs éphémères générées ou codées en dur directement dans le fichier de workflow (clés JWT régénérées à chaque run, identifiants MySQL de test) — jamais un vrai secret de production. **GitHub → Settings → Secrets** serait le mécanisme à utiliser si un secret réel (ex. clé de déploiement) devenait nécessaire.
 
 ---
 
