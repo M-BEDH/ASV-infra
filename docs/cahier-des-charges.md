@@ -73,7 +73,7 @@ Six profils utilisateurs doivent être servis par l'application, avec des besoin
 - **Contexte** : 38 ans, vétérinaire salarié, réalise les consultations et pose les diagnostics.
 - **Objectifs** : consulter l'historique médical complet d'un animal avant de statuer, créer/modifier des consultations rapidement entre deux rendez-vous.
 - **Besoins d'accès** : lecture/écriture complète sur les animaux, propriétaires et consultations de sa clinique.
-- **Limites** : ne peut pas intervenir sur une consultation d'une autre clinique, même en cas de remplacement ponctuel.
+- **Limites** : n'a accès qu'aux données de la clinique sur laquelle il est connecté ; pour intervenir dans une autre clinique (remplacement ponctuel), il doit y disposer d'un compte et choisir cet établissement au moment de la connexion.
 - **Niveau numérique** : bon, utilise l'app entre deux consultations sur smartphone ou tablette.
 
 ### Persona 5 — Sophie, Responsable de clinique
@@ -151,7 +151,7 @@ Interface d'administration dédiée, réservée au super-administrateur, permett
 - Protection contre l'exécution de scripts et le détournement de trafic (en-têtes de sécurité HTTP)
 - Anonymisation des données personnelles à la suppression d'un compte propriétaire ou utilisateur, plutôt qu'un effacement physique (traçabilité de l'historique médical préservée)
 
-### 5.2 Disponibilité et supervision (BF10)
+### 5.2 Disponibilité et supervision (enrichissement)
 
 Le système doit exposer des indicateurs opérationnels minimaux (disponibilité, activité par rôle) permettant une supervision de son fonctionnement.
 
